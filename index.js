@@ -1,4 +1,4 @@
-const { agregarPost, obtenerPosts } = require("./posts");
+const { agregarPost, getPosts, putPosts, deletePost } = require("./posts");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -9,12 +9,44 @@ app.use(express.json(), cors());
 app.listen(3000, console.log("SERVIDOR ENCENDIDO"));
 
 app.get("/posts", async (req, res) => {
-  const posts = await obtenerPosts();
-  res.json(posts);
+  try {
+    const posts = await getPosts();
+    res.json(posts);
+  } catch (error) {
+    res.send(error.message);
+  }
 });
 
 app.post("/posts", async (req, res) => {
-  const { titulo, img, descripcion, likes } = req.body;
-  await agregarPost(titulo, img, descripcion, likes);
-  res.send("Post agregado con exito");
+  try {
+    const { titulo, img, descripcion, likes } = req.body;
+    await agregarPost(titulo, img, descripcion, likes);
+    res.send("Post agregado con exito");
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+app.put("/posts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { titulo } = req.body;
+    //   const { img } = req.body;
+    //   const { descripcion } = req.body;
+    //   const { likes } = req.body;
+    const response = await putPosts(id, titulo, img, descripcion, likes);
+    res.status(200).send("actualizado con exito");
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+
+  app.delete("/posts/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await deletePost(id);
+      res.status(200).send("eliminado con exito");
+    } catch (error) {
+      res.send(error.message);
+    }
+  });
 });

@@ -9,20 +9,56 @@ const pool = new Pool({
 });
 
 const agregarPost = async (titulo, img, descripcion, likes) => {
-  const consulta = "INSERT INTO posts values (DEFAULT, $1, $2, $3, $4)";
-  const values = [titulo, img, descripcion, likes];
-  const result = await pool.query(consulta, values);
-  console.log("post agregado");
+  try {
+    const consulta = "INSERT INTO posts values (DEFAULT, $1, $2, $3, $4)";
+    const values = [titulo, img, descripcion, likes];
+    const result = await pool.query(consulta, values);
+    console.log("post agregado");
+  } catch (error) {
+    throw new Error("No se pudo agregar el post");
+  }
 };
 
-agregarPost("Felipe", "URL", "Muy lindo", "20");
-
-const obtenerPosts = async () => {
-  const { rows } = await pool.query("SELECT * FROM posts");
-  console.log(rows);
-  return rows;
+const getPosts = async () => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM posts");
+    console.log(rows);
+    return rows;
+  } catch (error) {
+    throw new Error("No se pudo obtener el post");
+  }
 };
 
-obtenerPosts();
+const putPosts = async (id, titulo, img, descripcion, likes) => {
+  try {
+    const consulta =
+      "Update posts SET titulo=$2 img=$3 descripcion=$4 likes=$5 where id=$1";
+    const values = [id, titulo, img, descripcion, likes];
+    const result = await pool.query(consulta, values);
+    console.log(result.rowCount);
+    if (result.rowCount != 0) {
+      return true;
+    } else {
+      throw new Error("No se completo la actualizacion");
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
-module.exports = { agregarPost, obtenerPosts };
+const deletePost = async (id) => {
+  try {
+    const consulta = "DELETE from posts Where id=$1";
+    const values = [id];
+    const result = await pool.query(consulta, values);
+    console.log(result.rowCount);
+    if (result.rowCount != 0) {
+      return true;
+    } else {
+      throw new Error("Problemas al eliminar");
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+module.exports = { agregarPost, getPosts, putPosts, deletePost };
