@@ -29,11 +29,10 @@ const getPosts = async () => {
   }
 };
 
-const putPosts = async (id, titulo, img, descripcion, likes) => {
+const putPosts = async (id, likes) => {
   try {
-    const consulta =
-      "Update posts SET titulo=$2 img=$3 descripcion=$4 likes=$5 where id=$1";
-    const values = [id, titulo, img, descripcion, likes];
+    const consulta = "Update posts SET likes = likes + 1 where id=$1";
+    const values = [id];
     const result = await pool.query(consulta, values);
     console.log(result.rowCount);
     if (result.rowCount != 0) {

@@ -30,11 +30,11 @@ app.post("/posts", async (req, res) => {
 app.put("/posts/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { titulo } = req.body;
+    const { likes } = req.body;
     //   const { img } = req.body;
     //   const { descripcion } = req.body;
     //   const { likes } = req.body;
-    const response = await putPosts(id, titulo, img, descripcion, likes);
+    const response = await putPosts(id);
     res.status(200).send("actualizado con exito");
   } catch (error) {
     res.status(404).send(error.message);
